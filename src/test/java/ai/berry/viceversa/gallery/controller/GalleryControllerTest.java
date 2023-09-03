@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -51,7 +50,7 @@ public class GalleryControllerTest {
                         , "202312", title, "한국인", title, "20230903193000", null));
 
         String content = objectMapper.writeValueAsString(galleryRequest);
-        mockMvc.perform(MockMvcRequestBuilders.post("/galleries")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/galleries")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -99,7 +98,7 @@ public class GalleryControllerTest {
                         , "202312", title, "중국인", title, "20230903193000", null));
 
         String content = objectMapper.writeValueAsString(galleryRequest);
-        mockMvc.perform(MockMvcRequestBuilders.put("/galleries/{id}", 1)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/galleries/{id}", 1)
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
