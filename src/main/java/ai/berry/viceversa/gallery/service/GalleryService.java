@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GalleryService {
@@ -23,6 +25,17 @@ public class GalleryService {
     public Gallery findById(long id) {
 
         return repository.findById(id).orElseThrow();
+    }
+
+    /**
+     * 관광 사진 목록 조회
+     *
+     * @return 조회된 사진 목록 정보
+     */
+    @Transactional(readOnly = true)
+    public List<Gallery> findAll() {
+
+        return repository.findAll();
     }
 
     /**

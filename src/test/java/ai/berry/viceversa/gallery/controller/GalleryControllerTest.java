@@ -16,6 +16,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -177,6 +179,38 @@ public class GalleryControllerTest {
                                         fieldWithPath("galSearchKeyword").description("검색 키워드"),
                                         fieldWithPath("galCreatedTime").description("최초 등록일"),
                                         fieldWithPath("galModifiedTime").description("최종 수정일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    @DisplayName("사진 목록 조회")
+    void findGalleries() throws Exception {
+
+        String title = "광화문";
+
+        BDDMockito.given(galleryService.findAll())
+                .willReturn(List.of(new Gallery(1L, 19, title, "https://www.naver.com"
+                        , "202312", title, "중국인", title, "20230903193000", null)));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/galleries")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        document("get-galleries",
+                                responseFields(
+                                        fieldWithPath("[].galContentId").description("고유 번호"),
+                                        fieldWithPath("[].galContentTypeId").description("타입 번호"),
+                                        fieldWithPath("[].galTitle").description("제목"),
+                                        fieldWithPath("[].galWebImageUrl").description("웹용 이미지 경로"),
+                                        fieldWithPath("[].galPhotographyMonth").description("촬영 월"),
+                                        fieldWithPath("[].galPhotographyLocation").description("촬영 장소"),
+                                        fieldWithPath("[].galPhotographer").description("촬영자"),
+                                        fieldWithPath("[].galSearchKeyword").description("검색 키워드"),
+                                        fieldWithPath("[].galCreatedTime").description("최초 등록일"),
+                                        fieldWithPath("[].galModifiedTime").description("최종 수정일")
                                 )
                         )
                 );

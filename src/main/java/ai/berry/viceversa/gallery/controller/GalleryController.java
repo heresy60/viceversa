@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/galleries")
@@ -28,6 +30,19 @@ public class GalleryController {
         Gallery gallery = galleryService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(GalleryResponse.parse(gallery));
+    }
+
+    /**
+     * 사진 목록 조회
+     *
+     * @return 조회된 사진 목록 정보
+     */
+    @GetMapping
+    public ResponseEntity<List<GalleryResponse>> findAll() {
+
+        List<GalleryResponse> list = galleryService.findAll().stream().map(GalleryResponse::parse).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     /**
