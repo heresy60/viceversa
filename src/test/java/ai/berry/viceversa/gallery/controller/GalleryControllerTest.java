@@ -12,11 +12,13 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -54,6 +56,57 @@ public class GalleryControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(
                         document("post-galleries",
+                                requestFields(
+                                        fieldWithPath("galContentTypeId").description("타입 번호"),
+                                        fieldWithPath("galTitle").description("제목"),
+                                        fieldWithPath("galWebImageUrl").description("웹용 이미지 경로"),
+                                        fieldWithPath("galPhotographyMonth").description("촬영 월"),
+                                        fieldWithPath("galPhotographyLocation").description("촬영 장소"),
+                                        fieldWithPath("galPhotographer").description("촬영자"),
+                                        fieldWithPath("galSearchKeyword").description("검색 키워드")
+                                ),
+                                responseFields(
+                                        fieldWithPath("galContentId").description("고유 번호"),
+                                        fieldWithPath("galContentTypeId").description("타입 번호"),
+                                        fieldWithPath("galTitle").description("제목"),
+                                        fieldWithPath("galWebImageUrl").description("웹용 이미지 경로"),
+                                        fieldWithPath("galPhotographyMonth").description("촬영 월"),
+                                        fieldWithPath("galPhotographyLocation").description("촬영 장소"),
+                                        fieldWithPath("galPhotographer").description("촬영자"),
+                                        fieldWithPath("galSearchKeyword").description("검색 키워드"),
+                                        fieldWithPath("galCreatedTime").description("최초 등록일"),
+                                        fieldWithPath("galModifiedTime").description("최종 수정일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    @DisplayName("사진 수정")
+    void modifyGallery() throws Exception {
+
+        String title = "광화문";
+
+        GalleryRequest galleryRequest = GalleryRequest.builder().galContentTypeId(19)
+                .galTitle(title).galWebImageUrl("https://www.naver.com")
+                .galPhotographyMonth("202312").galPhotographyLocation(title)
+                .galPhotographer("중국인").galSearchKeyword(title).build();
+
+        BDDMockito.given(galleryService.modify(1, galleryRequest))
+                .willReturn(new Gallery(1L, 19, title, "https://www.naver.com"
+                        , "202312", title, "중국인", title, "20230903193000", null));
+
+        String content = objectMapper.writeValueAsString(galleryRequest);
+        mockMvc.perform(MockMvcRequestBuilders.put("/galleries/{id}", 1)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(
+                        document("put-galleries",
+                                pathParameters(
+                                        RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
+                                ),
                                 requestFields(
                                         fieldWithPath("galContentTypeId").description("타입 번호"),
                                         fieldWithPath("galTitle").description("제목"),

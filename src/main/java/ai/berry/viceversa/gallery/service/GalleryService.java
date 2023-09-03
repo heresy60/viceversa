@@ -15,6 +15,7 @@ public class GalleryService {
 
     /**
      * 관광 사진 저장
+     *
      * @param request 저장할 사진 정보
      * @return 저장된 사진 정보
      */
@@ -22,5 +23,21 @@ public class GalleryService {
     public Gallery save(GalleryRequest request) {
 
         return repository.save(Gallery.save(request));
+    }
+
+    /**
+     * 관광 사진 수정
+     *
+     * @param id      수정할 사진 정보의 고유 번호
+     * @param request 수정할 사진 관련 정보
+     * @return 수정된 사진 정보
+     */
+    @Transactional
+    public Gallery modify(long id, GalleryRequest request) {
+
+        Gallery gallery = repository.findById(id).orElseThrow();
+        gallery.modify(request);
+
+        return repository.save(gallery);
     }
 }

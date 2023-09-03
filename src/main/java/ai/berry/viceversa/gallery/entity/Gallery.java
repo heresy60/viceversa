@@ -71,4 +71,19 @@ public class Gallery {
                 .galSearchKeyword(request.getGalSearchKeyword())
                 .galCreatedTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))).build();
     }
+
+    /**
+     * 수정 메소드, 수정 날짜는 메소드 호출 시점
+     * @param request 수정할 사진 정보
+     */
+    public void modify(GalleryRequest request) {
+        this.galContentTypeId = request.getGalContentTypeId();
+        this.galTitle = request.getGalTitle();
+        this.galWebImageUrl = request.getGalWebImageUrl();
+        this.galPhotographyMonth = request.getGalPhotographyMonth();
+        this.galPhotographyLocation = request.getGalPhotographyLocation();
+        this.galPhotographer = request.getGalPhotographer();
+        this.galSearchKeyword = request.getGalSearchKeyword();
+        this.galModifiedTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    }
 }
