@@ -23,6 +23,7 @@ import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -164,7 +165,7 @@ public class GalleryControllerTest {
 
         BDDMockito.given(galleryService.findById(1))
                 .willReturn(new Gallery(1L, 19, title, "https://www.naver.com"
-                        , "202312", title, "중국인", title, "20230903193000", null));
+                        , "202312", title, "중국인", title, "20230903193000", "20230903193002"));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/galleries/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -200,7 +201,7 @@ public class GalleryControllerTest {
         Pageable pageable = PageRequest.of(0,5);
         GallerySearchRequest request= GallerySearchRequest.builder().galTitle("광화문").build();
 
-        List<Gallery> data = List.of(new Gallery(1L, 19, title, "https://www.naver.com", "202312", title, "중국인", title, "20230903193000", null));
+        List<Gallery> data = List.of(new Gallery(1L, 19, title, "https://www.naver.com", "202312", title, "중국인", title, "20230903193000", "20230903193002"));
 
         Page<Gallery> result = new PageImpl<>(data, pageable, 1);
 
@@ -239,6 +240,32 @@ public class GalleryControllerTest {
                                         fieldWithPath("data[].galSearchKeyword").description("검색 키워드"),
                                         fieldWithPath("data[].galCreatedTime").description("최초 등록일"),
                                         fieldWithPath("data[].galModifiedTime").description("최종 수정일")
+                                )
+                        )
+                );
+
+    }
+
+    @Test
+    @DisplayName("사진 단일 조회")
+    void findGalleryError() throws Exception {
+
+        String title = "광화문";
+
+        BDDMockito.given(galleryService.findById(1))
+                .willThrow(new NoSuchElementException("해당 사진을 찾을 수 없습니다."));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/galleries/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(
+                        document("errors",
+                                pathParameters(
+                                        RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("message").description("오류 메시지"),
+                                        fieldWithPath("timestamp").description("오류 발생  시간")
                                 )
                         )
                 );
