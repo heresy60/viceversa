@@ -7,8 +7,8 @@ spring:
     defer-datasource-initialization: true
   datasource:
     url: jdbc:mysql://localhost:3306/viceversa
-    username: root
-    password: viceversa
+    username:
+    password:
   sql:
     init:
       mode: always
