@@ -3,13 +3,16 @@ package ai.berry.viceversa.gallery.controller;
 import ai.berry.viceversa.gallery.entity.Gallery;
 import ai.berry.viceversa.gallery.payload.GalleryRequest;
 import ai.berry.viceversa.gallery.payload.GalleryResponse;
+import ai.berry.viceversa.gallery.payload.GallerySearchRequest;
 import ai.berry.viceversa.gallery.service.GalleryService;
+import ai.berry.viceversa.gloal.payload.PagingResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,11 +41,12 @@ public class GalleryController {
      * @return 조회된 사진 목록 정보
      */
     @GetMapping
-    public ResponseEntity<List<GalleryResponse>> findAll() {
+    public ResponseEntity<PagingResponse<GalleryResponse>> findAll(GallerySearchRequest request, Pageable pageable) {
 
-        List<GalleryResponse> list = galleryService.findAll().stream().map(GalleryResponse::parse).toList();
+        Page<Gallery> all = galleryService.findAll(request, pageable);
+        PagingResponse<GalleryResponse> result = new PagingResponse<>(all.getTotalElements(), all.getContent().stream().map(GalleryResponse::parse).toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**

@@ -2,12 +2,17 @@ package ai.berry.viceversa.gallery.service;
 
 import ai.berry.viceversa.gallery.entity.Gallery;
 import ai.berry.viceversa.gallery.payload.GalleryRequest;
+import ai.berry.viceversa.gallery.payload.GallerySearchRequest;
 import ai.berry.viceversa.gallery.repository.GalleryRepository;
+import ai.berry.viceversa.gallery.repository.GallerySpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +29,7 @@ public class GalleryService {
     @Transactional(readOnly = true)
     public Gallery findById(long id) {
 
-        return repository.findById(id).orElseThrow();
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 사진을 찾을 수 없습니다."));
     }
 
     /**
@@ -33,9 +38,11 @@ public class GalleryService {
      * @return 조회된 사진 목록 정보
      */
     @Transactional(readOnly = true)
-    public List<Gallery> findAll() {
+    public Page<Gallery> findAll(GallerySearchRequest request, Pageable pageable) {
 
-        return repository.findAll();
+        Specification<Gallery> specification = GallerySpecification.init(request);
+
+        return repository.findAll(specification, pageable);
     }
 
     /**
@@ -60,7 +67,7 @@ public class GalleryService {
     @Transactional
     public Gallery modify(long id, GalleryRequest request) {
 
-        Gallery gallery = repository.findById(id).orElseThrow();
+        Gallery gallery = repository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 사진을 찾을 수 없습니다."));
         gallery.modify(request);
 
         return repository.save(gallery);
