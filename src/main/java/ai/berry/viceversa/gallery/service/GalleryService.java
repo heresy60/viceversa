@@ -13,6 +13,12 @@ public class GalleryService {
 
     private final GalleryRepository repository;
 
+    /**
+     * 관광 사진 정보 조회
+     *
+     * @param id 조회할 사진 정보의 고유 번호
+     * @return 조회된 사진 정보
+     */
     @Transactional(readOnly = true)
     public Gallery findById(long id) {
 

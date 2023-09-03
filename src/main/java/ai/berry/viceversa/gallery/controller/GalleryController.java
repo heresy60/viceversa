@@ -17,10 +17,9 @@ public class GalleryController {
     private final GalleryService galleryService;
 
     /**
-     * 사진 정보 수정
+     * 사진 정보 조회
      *
      * @param id      수정할 사진 정보의 고유 번호
-     * @param request 수정할 사진 관련 정보
      * @return 수정된 사진 정보
      */
     @GetMapping("/{id}")
