@@ -13,6 +13,12 @@ public class GalleryService {
 
     private final GalleryRepository repository;
 
+    @Transactional(readOnly = true)
+    public Gallery findById(long id) {
+
+        return repository.findById(id).orElseThrow();
+    }
+
     /**
      * 관광 사진 저장
      *
