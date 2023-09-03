@@ -55,7 +55,7 @@ public class GalleryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(
-                        document("post-galleries",
+                        document("post-gallery",
                                 requestFields(
                                         fieldWithPath("galContentTypeId").description("타입 번호"),
                                         fieldWithPath("galTitle").description("제목"),
@@ -95,7 +95,7 @@ public class GalleryControllerTest {
 
         BDDMockito.given(galleryService.modify(1, galleryRequest))
                 .willReturn(new Gallery(1L, 19, title, "https://www.naver.com"
-                        , "202312", title, "중국인", title, "20230903193000", null));
+                        , "202312", title, "중국인", title, "20230903193000", "20230903193011"));
 
         String content = objectMapper.writeValueAsString(galleryRequest);
         mockMvc.perform(RestDocumentationRequestBuilders.put("/galleries/{id}", 1)
@@ -103,7 +103,7 @@ public class GalleryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(
-                        document("put-galleries",
+                        document("put-gallery",
                                 pathParameters(
                                         RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
                                 ),
@@ -141,7 +141,7 @@ public class GalleryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(
-                        document("delete-galleries",
+                        document("delete-gallery",
                                 pathParameters(
                                         RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
                                 )));
@@ -162,7 +162,7 @@ public class GalleryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(
-                        document("get-galleries",
+                        document("get-gallery",
                                 pathParameters(
                                         RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
                                 ),
