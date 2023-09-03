@@ -44,4 +44,17 @@ public class GalleryController {
 
         return ResponseEntity.status(HttpStatus.OK).body(GalleryResponse.parse(gallery));
     }
+
+    /**
+     * 사진 정보 삭제
+     *
+     * @param id      삭제할 사진 정보의 고유 번호
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+
+        galleryService.delete(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

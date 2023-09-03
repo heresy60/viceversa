@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -130,6 +131,21 @@ public class GalleryControllerTest {
                                 )
                         )
                 );
+
+    }
+
+    @Test
+    @DisplayName("사진 삭제")
+    void deleteGallery() throws Exception {
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/galleries/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(
+                        document("delete-galleries",
+                                pathParameters(
+                                        RequestDocumentation.parameterWithName("id").description("사진 정보의 고유 번호")
+                                )));
 
     }
 }

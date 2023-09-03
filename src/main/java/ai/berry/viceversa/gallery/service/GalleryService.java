@@ -40,4 +40,15 @@ public class GalleryService {
 
         return repository.save(gallery);
     }
+
+    /**
+     * 관광 사진 삭제
+     *
+     * @param id 삭제할 사진 정보의 고유 번호
+     */
+    @Transactional
+    public void delete(long id) {
+
+        repository.deleteById(id);
+    }
 }
